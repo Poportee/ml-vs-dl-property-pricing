@@ -1,0 +1,97 @@
+Taille train : 11519249
+Taille test  : 1583000
+NaNs restants dans X_train après imputation: 0
+NaNs restants dans X_test après imputation: 0
+
+Target Scaler Stats (pour dé-normalisation):
+Log Mean: 12.0120
+Log Std: 0.7775
+Using device: cuda
+
+CAT_DIMS (taille des embeddings):
+{'type_local': 5, 'code_postal': 5869, 'code_departement': 98, 'code_voie': 16592, 'month_mutation': 13}
+
+--- Entraînement du FT-Transformer ---
+Epoch 1/50 | Train MSE: 0.439883 | Val MSE: 0.418259
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 2/50 | Train MSE: 0.410266 | Val MSE: 0.407853
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 3/50 | Train MSE: 0.396406 | Val MSE: 0.399666
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 4/50 | Train MSE: 0.386320 | Val MSE: 0.395041
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 5/50 | Train MSE: 0.378220 | Val MSE: 0.390449
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 6/50 | Train MSE: 0.371594 | Val MSE: 0.387655
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 7/50 | Train MSE: 0.365720 | Val MSE: 0.388365
+Epoch 8/50 | Train MSE: 0.360597 | Val MSE: 0.383760
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 9/50 | Train MSE: 0.356043 | Val MSE: 0.383468
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 10/50 | Train MSE: 0.352109 | Val MSE: 0.381373
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 11/50 | Train MSE: 0.348261 | Val MSE: 0.381425
+Epoch 12/50 | Train MSE: 0.344981 | Val MSE: 0.374321
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 13/50 | Train MSE: 0.341723 | Val MSE: 0.378603
+Epoch 14/50 | Train MSE: 0.338874 | Val MSE: 0.379588
+Epoch 15/50 | Train MSE: 0.336093 | Val MSE: 0.375141
+Epoch 16/50 | Train MSE: 0.333620 | Val MSE: 0.375105
+Epoch 17/50 | Train MSE: 0.331291 | Val MSE: 0.371641
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 18/50 | Train MSE: 0.328946 | Val MSE: 0.372093
+Epoch 19/50 | Train MSE: 0.326798 | Val MSE: 0.375408
+Epoch 20/50 | Train MSE: 0.324692 | Val MSE: 0.374046
+Epoch 21/50 | Train MSE: 0.322781 | Val MSE: 0.376248
+Epoch 22/50 | Train MSE: 0.321016 | Val MSE: 0.373350
+Epoch 23/50 | Train MSE: 0.319252 | Val MSE: 0.369814
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 24/50 | Train MSE: 0.317604 | Val MSE: 0.371653
+Epoch 25/50 | Train MSE: 0.316034 | Val MSE: 0.369358
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 26/50 | Train MSE: 0.314502 | Val MSE: 0.373346
+Epoch 27/50 | Train MSE: 0.312999 | Val MSE: 0.370695
+Epoch 28/50 | Train MSE: 0.311555 | Val MSE: 0.373601
+Epoch 29/50 | Train MSE: 0.310390 | Val MSE: 0.369365
+Epoch 30/50 | Train MSE: 0.308953 | Val MSE: 0.371307
+Epoch 31/50 | Train MSE: 0.307961 | Val MSE: 0.376170
+Epoch 32/50 | Train MSE: 0.306666 | Val MSE: 0.372870
+Epoch 33/50 | Train MSE: 0.305564 | Val MSE: 0.373216
+Epoch 34/50 | Train MSE: 0.304356 | Val MSE: 0.366428
+    -> Val Loss améliorée. Poids du modèle sauvegardés.
+Epoch 35/50 | Train MSE: 0.303340 | Val MSE: 0.370867
+Epoch 36/50 | Train MSE: 0.302155 | Val MSE: 0.370612
+Epoch 37/50 | Train MSE: 0.301329 | Val MSE: 0.369677
+Epoch 38/50 | Train MSE: 0.300348 | Val MSE: 0.371720
+Epoch 39/50 | Train MSE: 0.299291 | Val MSE: 0.370088
+Epoch 40/50 | Train MSE: 0.298212 | Val MSE: 0.368905
+Epoch 41/50 | Train MSE: 0.297534 | Val MSE: 0.367654
+Epoch 42/50 | Train MSE: 0.296636 | Val MSE: 0.372042
+Epoch 43/50 | Train MSE: 0.295749 | Val MSE: 0.370354
+Epoch 44/50 | Train MSE: 0.294865 | Val MSE: 0.370160
+Early stopping déclenché à l'époque 44.
+Modèle restauré à la meilleure époque (Val MSE: 0.366428).
+
+Modèle enregistré sur le disque : ft_transformer_best_model_weights.pt
+
+--- Prédiction sur l'ensemble de Test ---
+
+==================================================
+--- Évaluation Finale du FT-Transformer ---
+==================================================
+--- Performance Globale du modèle ---
+    MAE  : 69,808 €
+    RMSE : 112,257 €
+    R²   : 0.5519
+
+--- Évaluation par Tranche de Prix (sur Target y_true) ---
+--- 0-200k€ (proportion : 53.88%) ---
+    MAE  : 47,267 €
+    RMSE : 76,976 €
+--- 200k-500k€ (proportion : 38.44%) ---
+    MAE  : 73,688 €
+    RMSE : 100,786 €
+--- 500k-1M€ (proportion : 7.68%) ---
+    MAE  : 208,444 €
+    RMSE : 267,649 €

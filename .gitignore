@@ -5,9 +5,8 @@
 !/data/processed/.gitkeep
 !/data/created_data/.gitkeep
 
-*.csv
+#*.csv
 *.parquet
-*.txt
 *.zip
 *.gz
 *.tar

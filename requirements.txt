@@ -1,0 +1,9 @@
+streamlit==1.32.0
+pandas
+numpy
+lightgbm
+torch==2.2.1 --index-url https://download.pytorch.org/whl/cpu
+scikit-learn
+joblib
+requests
+fastparquet

@@ -127,11 +127,12 @@ def safe_remap(val, max_dim):
 # INTERFACE UTILISATEUR STREAMLIT
 # ==================================================================================
 
-st.title("🏠 Estimateur de Valeur Foncière (ML vs DL)")
+st.title("🏠 Estimateur de Valeur Foncière")
 
 # --- ENCART D'AVERTISSEMENT ACADÉMIQUE ---
 st.warning("""
-**⚠️ Projet Académique - Limites de l'estimation** Cette démonstration est un projet de portfolio. Les estimations générées sont basées sur les données open-source DVF (Demandes de Valeurs Foncières) et peuvent manquer de précision. **Les modèles n'ont pas accès à des données cruciales** telles que l'état intérieur du bien, des photos, la présence d'un extérieur, ou des descriptions détaillées, qui influencent fortement le prix réel.
+**⚠️ Projet Académique - Limites de l'estimation ** 
+        Cette démonstration est un projet de portfolio. Les estimations générées sont basées sur les données open-source DVF, **les modèles n'ont donc pas accès à certeines données cruciales** telles que l'état intérieur du bien, des photos, ou des descriptions détaillées, qui influencent fortement le prix réel.
 """)
 
 st.markdown("Ce projet compare les performances d'un modèle **LightGBM** (Machine Learning) et d'un **FT-Transformer** (Deep Learning) pour l'estimation immobilière en France.")
@@ -154,16 +155,17 @@ with st.form("prediction_form"):
         # Limites ajoutées : min 5m², max 1000m²
         surface = st.number_input("Surface réelle bâtie (m²)", min_value=5.0, max_value=1000.0, value=50.0, step=1.0)
         
-        # Apparition conditionnelle de la surface du terrain
-        if type_local == "Maison":
-            # Le minimum est la surface bâtie, le maximum est 100 000m²
-            surface_terrain = st.number_input("Surface du terrain (m²)", min_value=float(surface), max_value=100000.0, value=float(surface), step=1.0)
-        else:
-            surface_terrain = surface
 
     with col2:
         # Limites ajoutées : min 1, max 80
         nb_pieces = st.number_input("Nombre de pièces principales", min_value=1, max_value=80, value=2, step=1)
+
+        # Apparition conditionnelle de la surface du terrain
+        if type_local == "Maison":
+            # Le minimum est la surface bâtie, le maximum est 100 000m²
+            surface_terrain = st.number_input("Surface du terrain (m²)", min_value=5.0, max_value=100000.0, value=float(surface), step=1.0)
+        else:
+            surface_terrain = surface
         
     submit_button = st.form_submit_button("Estimer le prix")
 
@@ -182,8 +184,9 @@ if submit_button:
             
             # --- Explications des agrégats pour la démo ---
             st.info("""
-            🔄 **Enrichissement des données en cours...** * Création de variables externes (ex: distance au centre-ville, densité et population de la commune via l'INSEE).  
-            * Génération d'agrégats statistiques (ex: prix médian au m² sur le code postal, dynamique des transactions locales).
+            🔄 **Enrichissement des données en cours...** 
+            * Ajout de variables externes (distance au centre-ville, population et densité de la commune via l'INSEE...).  
+            * Génération d'agrégats statistiques (prix médian au m² sur le code postal, dynamique des transactions locales...).
             """)
             
             with st.spinner("Calcul des features et Inférence par les modèles..."):

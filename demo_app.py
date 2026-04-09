@@ -26,7 +26,6 @@ MODELS_DIR = os.path.join(BASE_DIR, 'models')
 STATS_FILE = os.path.join(BASE_DIR, 'data', 'processed', 'cp_stats.parquet')
 COMMUNES_FILE = os.path.join(BASE_DIR, 'data', 'raw', 'communes-france-2025.csv')
 
-
 # ==================================================================================
 # MISE EN CACHE DES DONNÉES ET MODÈLES (Crucial pour la vitesse web)
 # ==================================================================================
@@ -69,7 +68,6 @@ def load_models():
     except Exception as e:
         st.error(f"Erreur de chargement des modèles : {e}")
         return None, None, None, None
-
 
 # ==================================================================================
 # FONCTIONS UTILITAIRES (Identiques à votre script)
@@ -130,6 +128,12 @@ def safe_remap(val, max_dim):
 # ==================================================================================
 
 st.title("🏠 Estimateur de Valeur Foncière (ML vs DL)")
+
+# --- ENCART D'AVERTISSEMENT ACADÉMIQUE ---
+st.warning("""
+**⚠️ Projet Académique - Limites de l'estimation** Cette démonstration est un projet de portfolio. Les estimations générées sont basées sur les données open-source DVF (Demandes de Valeurs Foncières) et peuvent manquer de précision. **Les modèles n'ont pas accès à des données cruciales** telles que l'état intérieur du bien, des photos, la présence d'un extérieur, ou des descriptions détaillées, qui influencent fortement le prix réel.
+""")
+
 st.markdown("Ce projet compare les performances d'un modèle **LightGBM** (Machine Learning) et d'un **FT-Transformer** (Deep Learning) pour l'estimation immobilière en France.")
 
 # --- Chargement silencieux en arrière-plan ---
@@ -146,9 +150,20 @@ with st.form("prediction_form"):
     col1, col2 = st.columns(2)
     with col1:
         type_local = st.selectbox("Type de bien", ["Appartement", "Maison"])
-        surface = st.number_input("Surface réelle bâtie (m²)", min_value=9.0, value=50.0, step=1.0)
+        
+        # Limites ajoutées : min 5m², max 1000m²
+        surface = st.number_input("Surface réelle bâtie (m²)", min_value=5.0, max_value=1000.0, value=50.0, step=1.0)
+        
+        # Apparition conditionnelle de la surface du terrain
+        if type_local == "Maison":
+            # Le minimum est la surface bâtie, le maximum est 100 000m²
+            surface_terrain = st.number_input("Surface du terrain (m²)", min_value=float(surface), max_value=100000.0, value=float(surface), step=1.0)
+        else:
+            surface_terrain = surface
+
     with col2:
-        nb_pieces = st.number_input("Nombre de pièces principales", min_value=1, value=2, step=1)
+        # Limites ajoutées : min 1, max 80
+        nb_pieces = st.number_input("Nombre de pièces principales", min_value=1, max_value=80, value=2, step=1)
         
     submit_button = st.form_submit_button("Estimer le prix")
 
@@ -157,7 +172,7 @@ if submit_button:
     if not address_input:
         st.warning("Veuillez saisir une adresse.")
     else:
-        with st.spinner("Recherche des coordonnées géographiques..."):
+        with st.spinner("Recherche des coordonnées géographiques (API Adresse)..."):
             geo_info = get_geo_data(address_input)
             
         if not geo_info:
@@ -165,7 +180,13 @@ if submit_button:
         else:
             st.success(f"📍 Localisé : {geo_info['city']} ({geo_info['code_postal']}) - INSEE: {geo_info['code_insee']}")
             
-            with st.spinner("Calcul des features et Inférence..."):
+            # --- Explications des agrégats pour la démo ---
+            st.info("""
+            🔄 **Enrichissement des données en cours...** * Création de variables externes (ex: distance au centre-ville, densité et population de la commune via l'INSEE).  
+            * Génération d'agrégats statistiques (ex: prix médian au m² sur le code postal, dynamique des transactions locales).
+            """)
+            
+            with st.spinner("Calcul des features et Inférence par les modèles..."):
                 # --- Création du vecteur ---
                 commune_info = communes_df[communes_df['code_insee'] == geo_info['code_insee']] if communes_df is not None else pd.DataFrame()
                 
@@ -178,10 +199,14 @@ if submit_button:
                 dist_centre = haversine((geo_info['lat'], geo_info['lon']), (lat_centre, lon_centre))
                 stats = get_historical_stats(geo_info['code_postal'], global_stats_df)
                 
+                # Définition de la variable surface_m2 selon le type de bien
+                surface_m2_finale = surface_terrain if type_local == "Maison" else surface
+
                 df_input = pd.DataFrame([{
                     'type_local': type_local, 'surface_reelle_bati': surface, 'nb_pieces_principales': nb_pieces,
                     'code_postal': geo_info['code_postal'], 'code_departement': geo_info['code_postal'][:2], 
-                    'code_voie': geo_info['code_voie'], 'nombre_de_lots': 1.0, 'surface_m2': surface, 
+                    'code_voie': geo_info['code_voie'], 'nombre_de_lots': 1.0, 
+                    'surface_m2': surface_m2_finale, # Utilisation de la nouvelle logique
                     'source_year': datetime.now().year, 'code_insee': int(geo_info['code_insee']) if geo_info['code_insee'].isdigit() else 0,
                     'lat': geo_info['lat'], 'lon': geo_info['lon'], 'distance_centre_ville': dist_centre,
                     'densite_commune': densite, 'altitude_moyenne_commune': alt, 'population_commune': pop,

@@ -26,9 +26,9 @@ MODELS_DIR = os.path.join(BASE_DIR, 'models')
 STATS_FILE = os.path.join(BASE_DIR, 'data', 'processed', 'cp_stats.parquet')
 COMMUNES_FILE = os.path.join(BASE_DIR, 'data', 'raw', 'communes-france-2025.csv')
 
-# ==================================================================================
-# MISE EN CACHE DES DONNÉES ET MODÈLES (Crucial pour la vitesse web)
-# ==================================================================================
+# ====================================
+# MISE EN CACHE DES DONNÉES ET MODÈLES
+# ====================================
 
 @st.cache_data
 def load_global_stats():
@@ -69,9 +69,9 @@ def load_models():
         st.error(f"Erreur de chargement des modèles : {e}")
         return None, None, None, None
 
-# ==================================================================================
-# FONCTIONS UTILITAIRES (Identiques à votre script)
-# ==================================================================================
+# =====================
+# FONCTIONS UTILITAIRES 
+# =====================
 
 def get_historical_stats(code_postal, global_stats_df):
     if not global_stats_df.empty and code_postal in global_stats_df.index:
@@ -123,19 +123,19 @@ def safe_remap(val, max_dim):
     return new_val
 
 
-# ==================================================================================
+# ===============================
 # INTERFACE UTILISATEUR STREAMLIT
-# ==================================================================================
+# ===============================
 
 st.title("🏠 Estimateur de Valeur Foncière")
 
-# --- ENCART D'AVERTISSEMENT ACADÉMIQUE ---
-st.warning("""
-**⚠️ Projet Académique - Limites de l'estimation ** 
-        Cette démonstration est un projet de portfolio. Les estimations générées sont basées sur les données open-source DVF, **les modèles n'ont donc pas accès à certeines données cruciales** telles que l'état intérieur du bien, des photos, ou des descriptions détaillées, qui influencent fortement le prix réel.
-""")
-
 st.markdown("Ce projet compare les performances d'un modèle **LightGBM** (Machine Learning) et d'un **FT-Transformer** (Deep Learning) pour l'estimation immobilière en France.")
+
+st.warning("""
+**⚠️ Projet Académique - Limites de l'estimation **
+
+Cette démonstration est un projet de portfolio. Les estimations générées sont basées sur les données open-source DVF, **les modèles n'ont donc pas accès à certeines données cruciales** telles que l'état intérieur du bien, des photos, ou des descriptions détaillées, qui influencent fortement le prix réel.
+""")
 
 # --- Chargement silencieux en arrière-plan ---
 global_stats_df = load_global_stats()
@@ -151,18 +151,16 @@ with st.form("prediction_form"):
     col1, col2 = st.columns(2)
     with col1:
         type_local = st.selectbox("Type de bien", ["Appartement", "Maison"])
-        
-        # Limites ajoutées : min 5m², max 1000m²
+
         surface = st.number_input("Surface réelle bâtie (m²)", min_value=5.0, max_value=1000.0, value=50.0, step=1.0)
         
 
     with col2:
-        # Limites ajoutées : min 1, max 80
+
         nb_pieces = st.number_input("Nombre de pièces principales", min_value=1, max_value=80, value=2, step=1)
 
         # Apparition conditionnelle de la surface du terrain
         if type_local == "Maison":
-            # Le minimum est la surface bâtie, le maximum est 100 000m²
             surface_terrain = st.number_input("Surface du terrain (m²)", min_value=5.0, max_value=100000.0, value=float(surface), step=1.0)
         else:
             surface_terrain = surface
@@ -209,7 +207,7 @@ if submit_button:
                     'type_local': type_local, 'surface_reelle_bati': surface, 'nb_pieces_principales': nb_pieces,
                     'code_postal': geo_info['code_postal'], 'code_departement': geo_info['code_postal'][:2], 
                     'code_voie': geo_info['code_voie'], 'nombre_de_lots': 1.0, 
-                    'surface_m2': surface_m2_finale, # Utilisation de la nouvelle logique
+                    'surface_m2': surface_m2_finale,
                     'source_year': datetime.now().year, 'code_insee': int(geo_info['code_insee']) if geo_info['code_insee'].isdigit() else 0,
                     'lat': geo_info['lat'], 'lon': geo_info['lon'], 'distance_centre_ville': dist_centre,
                     'densite_commune': densite, 'altitude_moyenne_commune': alt, 'population_commune': pop,
@@ -260,7 +258,7 @@ if submit_button:
                     with torch.no_grad():
                         pred_log_trans = model_ft(x_num_tensor, x_cat_tensor).item()
                     
-                    TARGET_MEAN, TARGET_STD = 12.7120, 0.7775
+                    TARGET_MEAN, TARGET_STD = 12.0120, 0.7775
                     prix_ft = np.exp((pred_log_trans * TARGET_STD) + TARGET_MEAN)
 
                     # --- Affichage des résultats ---

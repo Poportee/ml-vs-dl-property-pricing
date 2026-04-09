@@ -1,6 +1,7 @@
 !/data/
 /data/**
 !/data/raw/
+!/data/processed/
 !**/ .gitkeep
 
 !/data/raw/communes-france-2025.csv

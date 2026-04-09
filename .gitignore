@@ -1,8 +1,10 @@
-/data/*
-!/data/.gitkeep
-!/data/raw/.gitkeep
-!/data/processed/.gitkeep
-!/data/created_data/.gitkeep
+!/data/
+/data/**
+!/data/raw/
+!**/ .gitkeep
+
+!/data/raw/communes-france-2025.csv
+!/data/processed/cp_stats.parquet
 
 *.parquet
 *.zip
@@ -19,7 +21,3 @@ __pycache__/
 # *.pkl
 # /models/*
 # !/models/.gitkeep
-
-# Exceptions pour la démo
-!/data/raw/communes-france-2025.csv
-!/data/processed/cp_stats.parquet

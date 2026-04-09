@@ -129,19 +129,34 @@ def safe_remap(val, max_dim):
 
 st.title("🏠 Estimateur de Valeur Foncière")
 
-st.markdown("Ce projet compare les performances d'un modèle **LightGBM** (Machine Learning) et d'un **FT-Transformer** (Deep Learning) pour l'estimation immobilière en France.")
+st.markdown("Ce projet compare les performances d'un modèle **LightGBM** (Machine Learning) et d'un **FT-Transformer** (Deep Learning) pour l'estimation immobilière en France. " \
+"Les modèles ont été entraînés sur 13 millions de transactions immobilières réalisées en France au cours des 10 dernières années.")
 
 st.warning("""
 **⚠️ Projet Académique - Limites de l'estimation**
 
-Cette démonstration est un projet de portfolio. Les estimations générées sont basées sur les données open-source DVF, **les modèles n'ont donc pas accès à certeines données cruciales** telles que l'état intérieur du bien, des photos, ou des descriptions détaillées, qui influencent fortement le prix réel.
+Cette démonstration est un projet de portfolio. Les estimations générées sont basées sur les données open-source DVF. **Les modèles n'ont donc pas accès à certeines données cruciales** (intérieur du bien, photos ou des descriptions détaillées) qui influencent fortement le prix réel.
 """)
 
 
-# --- Chargement silencieux en arrière-plan ---
+# --- Chargement des données et modèles ---
 global_stats_df = load_global_stats()
 communes_df = load_commune_data()
 cat_encoder, lgb_model, num_scaler, model_ft = load_models()
+
+# --- Indicateur de statut des données ---
+with st.sidebar:
+    st.markdown("### 🔌 Statut du Serveur")
+    
+    if not global_stats_df.empty:
+        st.success("✅ Base DVF (cp_stats) : Connectée")
+    else:
+        st.error("⚠️ Base DVF : Introuvable (Valeurs par défaut)")
+        
+    if communes_df is not None and not communes_df.empty:
+        st.success("✅ API Communes (CSV) : Connectée")
+    else:
+        st.error("⚠️ API Communes : Introuvable (Valeurs par défaut)")
 
 # --- Formulaire de saisie ---
 with st.form("prediction_form"):

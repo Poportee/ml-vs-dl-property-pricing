@@ -6,7 +6,7 @@ def main():
     print("--- Génération des statistiques par Code Postal ---")
     
     # 1. Charger les données enrichies (qui contiennent déjà les stats)
-    data_path = "./data/dvf_features_final.parquet"
+    data_path = "./data/processed/final_dataset.parquet"
     if not os.path.exists(data_path):
         print(f"Erreur : Le fichier {data_path} est introuvable.")
         return
@@ -28,7 +28,7 @@ def main():
     cp_stats = df[stats_cols].drop_duplicates(subset=['code_postal'], keep='last')
     
     # 4. Sauvegarder
-    out_dir = "./data/preprocessed"
+    out_dir = "./data/processed"
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, "cp_stats.parquet")
     

@@ -7,7 +7,6 @@
 !/data/raw/communes-france-2025.csv
 !/data/processed/cp_stats.parquet
 
-*.parquet
 *.zip
 *.gz
 *.tar

@@ -132,10 +132,11 @@ st.title("🏠 Estimateur de Valeur Foncière")
 st.markdown("Ce projet compare les performances d'un modèle **LightGBM** (Machine Learning) et d'un **FT-Transformer** (Deep Learning) pour l'estimation immobilière en France.")
 
 st.warning("""
-**⚠️ Projet Académique - Limites de l'estimation **
+**⚠️ Projet Académique - Limites de l'estimation**
 
 Cette démonstration est un projet de portfolio. Les estimations générées sont basées sur les données open-source DVF, **les modèles n'ont donc pas accès à certeines données cruciales** telles que l'état intérieur du bien, des photos, ou des descriptions détaillées, qui influencent fortement le prix réel.
 """)
+
 
 # --- Chargement silencieux en arrière-plan ---
 global_stats_df = load_global_stats()

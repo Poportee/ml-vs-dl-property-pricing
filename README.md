@@ -11,7 +11,7 @@ Ce projet compare l'efficacité de deux paradigmes sur les données immobilière
 - Un modèle de **Machine Learning** classique (LightGBM) reconnu pour son efficacité sur les données tabulaires.
 - Une architecture **Deep Learning** (FT-Transformer) utilisant des mécanismes d'attention (Feature Tokenization).
 
-## 2. ⚙️ Pipeline de Données : Extraction, Nettoyage et Enrichissement
+## 2. ⚙️ Pipeline de Données
 
 Un des défis a été de traiter et d'enrichir la base de données publique DVF (Demandes de Valeurs Foncières) contenant plus de 13,4 millions de transactions entre 2014 et 2025.
 

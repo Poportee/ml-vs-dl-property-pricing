@@ -1,0 +1,22 @@
+name: Keep Streamlit Alive
+
+on:
+  schedule:
+    - cron: '28 */11 * * *'
+  workflow_dispatch: 
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Commit vide
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit --allow-empty -m "keep alive demo ping [skip ci]"
+          git push
